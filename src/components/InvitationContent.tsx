@@ -1,44 +1,62 @@
 import ScrollReveal from "@/components/ScrollReveal";
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const InvitationContent = () => {
+interface InvitationContentProps {
+  shouldPlayVideo: boolean;
+}
+
+const InvitationContent = ({ shouldPlayVideo }: InvitationContentProps) => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleCanPlay = () => {
     setIsVideoLoaded(true);
-    // Ensure video plays when it becomes visible
-    if (videoRef.current) {
+    if (shouldPlayVideo && videoRef.current) {
       videoRef.current.play().catch(() => {
         // Autoplay was blocked by browser, user can click to play
       });
     }
   };
 
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    if (shouldPlayVideo) {
+      videoRef.current.play().catch(() => {
+        // Autoplay was blocked by browser, user can click to play
+      });
+      return;
+    }
+
+    videoRef.current.pause();
+    videoRef.current.currentTime = 0;
+  }, [shouldPlayVideo]);
+
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       {/* Video Section - mobile first full screen */}
-      <section className="relative w-full h-[100svh] flex items-center justify-center bg-black">
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          src="/video/invitation.mp4"
-          controls
-          playsInline
-          autoPlay
-          muted
-          preload="auto"
-          onCanPlay={handleCanPlay}
-          style={{ opacity: isVideoLoaded ? 1 : 0, transition: "opacity 0.3s ease-in" }}
-        />
-        {!isVideoLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-4 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
-              <p className="text-foreground/60 text-sm font-sans">Loading video...</p>
+      <section className="relative w-full h-[100svh] flex items-center justify-center overflow-hidden bg-background">
+        <div className="relative h-full w-full overflow-hidden md:w-auto md:aspect-[9/16]">
+          <video
+            ref={videoRef}
+            className="block w-full h-full object-cover md:object-contain"
+            src="/video/invitation.mp4"
+            controls
+            playsInline
+            muted
+            preload="auto"
+            onCanPlay={handleCanPlay}
+            style={{ opacity: isVideoLoaded ? 1 : 0, transition: "opacity 0.3s ease-in" }}
+          />
+          {!isVideoLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 border-4 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+                <p className="text-foreground/60 text-sm font-sans">Loading video...</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       {/* Details Section */}

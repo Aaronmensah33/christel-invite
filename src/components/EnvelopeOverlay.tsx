@@ -1,17 +1,19 @@
 import { useState } from "react";
-import envelopTop from "@/assets/envelop-boven.png";
-import envelopBottom from "@/assets/envelop-beneden.png";
+import envelopTop from "@/assets/envelop-boven-langer.png";
+import envelopBottom from "@/assets/envelop-beneden-langer.png";
 
 interface EnvelopeOverlayProps {
+  onOpenStart?: () => void;
   onOpened: () => void;
 }
 
-const EnvelopeOverlay = ({ onOpened }: EnvelopeOverlayProps) => {
+const EnvelopeOverlay = ({ onOpenStart, onOpened }: EnvelopeOverlayProps) => {
   const [isOpening, setIsOpening] = useState(false);
 
   const handleClick = () => {
     if (isOpening) return;
     setIsOpening(true);
+    onOpenStart?.();
     setTimeout(() => {
       onOpened();
     }, 3500);
@@ -19,7 +21,9 @@ const EnvelopeOverlay = ({ onOpened }: EnvelopeOverlayProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 cursor-pointer bg-background overflow-hidden"
+      className={`fixed inset-0 z-50 cursor-pointer overflow-hidden transition-colors duration-200 ${
+        isOpening ? "bg-transparent" : "bg-background"
+      }`}
       onClick={handleClick}
     >
       {/* Bottom flap - starts at center, slides down - behind */}

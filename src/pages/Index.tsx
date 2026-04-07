@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import EnvelopeOverlay from "@/components/EnvelopeOverlay";
 import InvitationContent from "@/components/InvitationContent";
 
 const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isRevealing, setIsRevealing] = useState(false);
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
+  const playTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -20,20 +23,46 @@ const Index = () => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    return () => {
+      if (playTimerRef.current !== null) {
+        window.clearTimeout(playTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="relative min-h-screen bg-background">
-      {/* Video loads immediately in background - always rendered */}
+      {/* Content is always mounted so video can be revealed immediately */}
       <div
-        className={`fixed inset-0 transition-opacity duration-300 ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        className={`transition-opacity duration-300 ${
+          isRevealing || isOpen ? "opacity-100" : "opacity-0"
         }`}
-        style={{ top: 0, left: 0, right: 0, bottom: 0, zIndex: isOpen ? 10 : -1 }}
       >
-        <InvitationContent />
+        <InvitationContent shouldPlayVideo={shouldPlayVideo} />
       </div>
 
       {/* Envelope on top */}
-      {!isOpen && <EnvelopeOverlay onOpened={() => setIsOpen(true)} />}
+      {!isOpen && (
+        <EnvelopeOverlay
+          onOpenStart={() => {
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+            setIsRevealing(true);
+            if (playTimerRef.current !== null) {
+              window.clearTimeout(playTimerRef.current);
+            }
+            // Envelope animation is 3.5s; start the video around halfway.
+            playTimerRef.current = window.setTimeout(() => {
+              setShouldPlayVideo(true);
+            }, 1750);
+          }}
+          onOpened={() => {
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+            setShouldPlayVideo(true);
+            setIsOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 };
