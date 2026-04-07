@@ -1,16 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import EnvelopeOverlay from "@/components/EnvelopeOverlay";
+import InvitationContent from "@/components/InvitationContent";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="relative">
+      {!isOpen && <EnvelopeOverlay onOpened={() => setIsOpen(true)} />}
+      <div
+        className={`transition-opacity duration-700 ${
+          isOpen ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <InvitationContent />
+      </div>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
