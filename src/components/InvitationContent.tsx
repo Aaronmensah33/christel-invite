@@ -1,18 +1,44 @@
 import ScrollReveal from "@/components/ScrollReveal";
+import { useState, useRef } from "react";
 
 const InvitationContent = () => {
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleCanPlay = () => {
+    setIsVideoLoaded(true);
+    // Ensure video plays when it becomes visible
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Autoplay was blocked by browser, user can click to play
+      });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black">
       {/* Video Section - mobile first full screen */}
-      <section className="relative w-full h-[100svh] flex items-center justify-center">
+      <section className="relative w-full h-[100svh] flex items-center justify-center bg-black">
         <video
+          ref={videoRef}
           className="w-full h-full object-cover"
           src="/video/invitation.mp4"
           controls
           playsInline
           autoPlay
           muted
+          preload="auto"
+          onCanPlay={handleCanPlay}
+          style={{ opacity: isVideoLoaded ? 1 : 0, transition: "opacity 0.3s ease-in" }}
         />
+        {!isVideoLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-12 h-12 border-4 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+              <p className="text-foreground/60 text-sm font-sans">Loading video...</p>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Details Section */}
