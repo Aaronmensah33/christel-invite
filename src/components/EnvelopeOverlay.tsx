@@ -140,7 +140,7 @@ const EnvelopeOverlay = ({
             aria-hidden="true"
           >
             <div className="envelope-flap-hero-inner">
-              {renderFlapWords("open up for a suprise", 0.04)}
+              {renderFlapWords("open up for a surprise", 0.04)}
             </div>
           </div>
         )}
