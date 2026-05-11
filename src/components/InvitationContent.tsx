@@ -1,10 +1,7 @@
 import ScrollReveal from "@/components/ScrollReveal";
-import { CalendarDays, Camera, Gift, Heart, MapPin } from "lucide-react";
-import flowerCluster from "@/assets/flowers.png";
-import flowerBouquet from "@/assets/elegant-bouquet-peonies-mixed-flowers.png";
-import paperGrain from "@/assets/offwhite-paper-grain.png";
-import scannedPaper from "@/assets/vecteezy_scanned-paper-halftone-faded-gradient-texture-grunge_51785245.jpg";
-import waxSeal from "@/assets/waxseal.png";
+import { Camera, Clock3, Gift, MapPin } from "lucide-react";
+import silkBackground from "@/assets/silk-background.png";
+import invite25 from "@/assets/25.png";
 import { useEffect, useRef, useState } from "react";
 
 interface InvitationContentProps {
@@ -12,11 +9,11 @@ interface InvitationContentProps {
 }
 
 const InvitationContent = ({ isOpen }: InvitationContentProps) => {
-  const addressTimeRef = useRef<HTMLElement | null>(null);
-  const dresscodeRef = useRef<HTMLElement | null>(null);
-  const birthdayGiftsRef = useRef<HTMLElement | null>(null);
-  const closingRef = useRef<HTMLElement | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const detailsRef = useRef<HTMLElement | null>(null);
+  const dressRef = useRef<HTMLElement | null>(null);
+  const giftsRef = useRef<HTMLElement | null>(null);
+  const closingRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,7 +29,7 @@ const InvitationContent = ({ isOpen }: InvitationContentProps) => {
   const scrollToY = (targetY: number) => {
     const startY = window.scrollY;
     const distance = targetY - startY;
-    const duration = 1500;
+    const duration = 1100;
     let startTime: number | null = null;
 
     const easeInOutCubic = (value: number) => {
@@ -59,7 +56,7 @@ const InvitationContent = ({ isOpen }: InvitationContentProps) => {
 
   const scrollTo = (target: HTMLElement | null) => {
     if (!target) return;
-    scrollToY(target.getBoundingClientRect().top + window.scrollY);
+    scrollToY(target.getBoundingClientRect().top + window.scrollY - 24);
   };
 
   type WordAnimationProfile = {
@@ -84,18 +81,12 @@ const InvitationContent = ({ isOpen }: InvitationContentProps) => {
       letterStep = 0.025,
       firstLetterOffset = 0.03,
     } = profile;
-
     const words = text.split(" ");
 
     return (
       <span className="animated-phrase" aria-label={text}>
         {words.map((word, wordIndex) => {
           const wordDelay = startDelay + wordIndex * wordStep;
-          const useFirstLetterAccent =
-            word.length > 1 &&
-            (firstLetterMode === "all" ||
-              (firstLetterMode === "cadence" &&
-                wordIndex % firstLetterEvery === 0));
           const directionClass =
             directionMode === "left"
               ? "word-left"
@@ -109,6 +100,11 @@ const InvitationContent = ({ isOpen }: InvitationContentProps) => {
                     ? "word-left"
                     : "word-right";
           const [firstLetter, ...remainingLetters] = Array.from(word);
+          const useFirstLetterAccent =
+            word.length > 1 &&
+            (firstLetterMode === "all" ||
+              (firstLetterMode === "cadence" &&
+                wordIndex % firstLetterEvery === 0));
 
           return (
             <span
@@ -149,13 +145,22 @@ const InvitationContent = ({ isOpen }: InvitationContentProps) => {
   };
 
   return (
-    <div className="invite-stage timeline-root min-h-screen bg-background">
-      <img src={paperGrain} alt="" className="paper-grain-layer" />
-      <img
-        src={scannedPaper}
-        alt=""
-        className="paper-grain-layer paper-grain-secondary"
-      />
+    <div className="invite-scroll-page min-h-screen">
+      <img src={silkBackground} alt="" className="silk-background-layer" />
+      <div className="sparkle-overlay" aria-hidden="true">
+        {Array.from({ length: 36 }).map((_, index) => (
+          <span
+            key={index}
+            className="sparkle-dot"
+            style={{
+              left: `${(index * 9.7) % 100}%`,
+              top: `${(index * 13.3) % 100}%`,
+              animationDelay: `${(index % 12) * 0.22}s`,
+              animationDuration: `${2.2 + (index % 5) * 0.45}s`,
+            }}
+          />
+        ))}
+      </div>
 
       {showConfetti && (
         <div
@@ -166,7 +171,7 @@ const InvitationContent = ({ isOpen }: InvitationContentProps) => {
             const left = (index * 4.1) % 100;
             const delay = (index % 8) * 0.12;
             const duration = 2.7 + (index % 5) * 0.25;
-            const sway = (index % 2 === 0 ? 1 : -1) * (8 + (index % 4) * 3);
+            const sway = (index % 2 === 0 ? 1 : -1) * (7 + (index % 4) * 3);
 
             return (
               <span
@@ -184,251 +189,248 @@ const InvitationContent = ({ isOpen }: InvitationContentProps) => {
         </div>
       )}
 
-      <section className="timeline-section min-h-[100svh] py-16 px-6 md:py-24 md:px-12 max-w-2xl mx-auto text-center flex items-center justify-center">
-        <img src={waxSeal} alt="" className="wax-seal-deco wax-seal-mid" />
-        <img
-          src={flowerCluster}
-          alt=""
-          className="floral-deco floral-deco-left"
-        />
-        <div className="w-full space-y-10 md:space-y-14">
-          <ScrollReveal isEnabled={isOpen}>
-            <div className="space-y-6">
-              <div className="flex justify-center">
-                <Heart className="h-7 w-7 text-gold" strokeWidth={1.5} />
-              </div>
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-light text-foreground leading-tight">
-                {renderAnimatedWords("You’re invited for", 0.06)}
-                <span className="script-mix">Christel&rsquo;s</span>{" "}
-                {renderAnimatedWords("big 25!", 0.55)}
-              </h1>
-              <div className="w-16 h-px bg-white/95 mx-auto" />
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={220}>
-            <button
-              type="button"
-              onClick={() => scrollTo(addressTimeRef.current)}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold text-gold transition-colors hover:bg-gold hover:text-background"
+      <main className="single-sheet-shell">
+        <article className="invite-card single-invite-sheet">
+          <div className="paper-stroke-frame">
+            <ScrollReveal
+              isEnabled={isOpen}
+              className="sheet-panel sheet-panel-hero"
             >
-              <span className="text-lg leading-none animate-bounce">↓</span>
-            </button>
-          </ScrollReveal>
-        </div>
-      </section>
+              <header className="sheet-hero">
+                <p className="invite-script-line">
+                  {renderAnimatedWords("You are invited to", 0.03, {
+                    directionMode: "reverseAlternate",
+                    firstLetterMode: "none",
+                  })}
+                </p>
+                <h1 className="invite-title">
+                  {renderAnimatedWords("CHRISTEL'S", 0.04, {
+                    firstLetterMode: "all",
+                    directionMode: "alternate",
+                    wordStep: 0.16,
+                    letterStep: 0.06,
+                    firstLetterOffset: 0.12,
+                  })}
+                </h1>
+                <div className="invite-25-holder">
+                  <img
+                    src={invite25}
+                    alt="25th birthday"
+                    className="invite-25-image"
+                  />
+                  <span className="invite-25-suffix" aria-hidden="true">
+                    TH
+                  </span>
+                </div>
+                <p className="invite-main-label">Birthday Dinner</p>
+                <p className="invite-date">Sunday, 13 September 2026</p>
+                <div className="sheet-scroll-row">
+                  <button
+                    type="button"
+                    className="sheet-scroll-button"
+                    onClick={() => scrollTo(detailsRef.current)}
+                    aria-label="Scroll naar details"
+                  >
+                    ↓
+                  </button>
+                </div>
+              </header>
+            </ScrollReveal>
 
-      <section
-        ref={addressTimeRef}
-        className="timeline-section min-h-[100svh] py-16 px-6 md:py-24 md:px-12 max-w-2xl mx-auto text-center flex items-center justify-center"
-      >
-        <div className="w-full space-y-10 md:space-y-14">
-          <ScrollReveal isEnabled={isOpen}>
-            <div className="space-y-4">
-              <div className="flex justify-center gap-3 text-gold">
-                <CalendarDays className="h-6 w-6" strokeWidth={1.5} />
-                <MapPin className="h-6 w-6" strokeWidth={1.5} />
-              </div>
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light text-foreground leading-tight">
-                {renderAnimatedWords("address and time:", 0.03, {
-                  firstLetterMode: "none",
-                  directionMode: "reverseAlternate",
-                  wordStep: 0.11,
-                })}
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={80}>
-            <div className="w-16 h-px bg-white/95 mx-auto" />
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={130}>
-            <div className="space-y-5 text-muted-foreground font-sans text-sm sm:text-base leading-relaxed">
-              <p className="dropcap-line">
-                {renderAnimatedWords("Sunday 13.09.26.", 0.01, {
-                  firstLetterMode: "none",
-                  directionMode: "left",
-                  wordStep: 0.09,
-                })}
-              </p>
-              <p className="dropcap-line">
-                Time: you are kindly requested to arrive at 17:30
-              </p>
-              <p className="dropcap-line">
-                -Party Centrum Ons Huis-
-                <br />
-                Beatrijsstraat 120
-                <br />
-                2531 XE Den Haag
-              </p>
-              <p className="dropcap-line">
-                PS: please note that paid parking applies in the area from 18:00
-                onwards.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={200}>
-            <button
-              type="button"
-              onClick={() => scrollTo(dresscodeRef.current)}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold text-gold transition-colors hover:bg-gold hover:text-background"
+            <ScrollReveal
+              isEnabled={isOpen}
+              delay={120}
+              className="sheet-panel"
             >
-              <span className="text-lg leading-none animate-bounce">↓</span>
-            </button>
-          </ScrollReveal>
-        </div>
-      </section>
+              <section ref={detailsRef} className="sheet-block">
+                <h2 className="details-title">
+                  {renderAnimatedWords("The Details", 0.03, {
+                    firstLetterMode: "cadence",
+                    firstLetterEvery: 2,
+                    directionMode: "reverseAlternate",
+                  })}
+                </h2>
+                <div className="details-divider" />
 
-      <section
-        ref={dresscodeRef}
-        className="timeline-section min-h-[100svh] py-16 px-6 md:py-24 md:px-12 max-w-2xl mx-auto text-center flex items-center justify-center"
-      >
-        <img
-          src={flowerBouquet}
-          alt=""
-          className="floral-deco floral-deco-right"
-        />
-        <div className="w-full space-y-10 md:space-y-14">
-          <ScrollReveal isEnabled={isOpen}>
-            <div className="space-y-4">
-              <div className="flex justify-center text-gold">
-                <Camera className="h-6 w-6" strokeWidth={1.5} />
+                <div className="details-item">
+                  <Clock3 className="details-icon" strokeWidth={1.5} />
+                  <div>
+                    <h3>
+                      {renderAnimatedWords(
+                        "Kindly arrive at 17:30 sharp",
+                        0.02,
+                        {
+                          firstLetterMode: "none",
+                          directionMode: "left",
+                          wordStep: 0.09,
+                        },
+                      )}
+                    </h3>
+                    <p>
+                      {renderAnimatedWords(
+                        "so we can start the evening together on time.",
+                        0.03,
+                        {
+                          firstLetterMode: "none",
+                          directionMode: "reverseAlternate",
+                          wordStep: 0.08,
+                        },
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="details-divider" />
+
+                <div className="details-item">
+                  <MapPin className="details-icon" strokeWidth={1.5} />
+                  <div>
+                    <h3>
+                      {renderAnimatedWords("Address and parking", 0.02, {
+                        firstLetterMode: "cadence",
+                        firstLetterEvery: 2,
+                        directionMode: "right",
+                      })}
+                    </h3>
+                    <p>
+                      Partycentrum Ons Huis
+                      <br />
+                      Beatrijsstraat 120
+                      <br />
+                      2531 XE Den Haag
+                    </p>
+                    <p className="details-note">
+                      (from 18:00 onwards paid parking applies)
+                    </p>
+                  </div>
+                </div>
+              </section>
+              <div className="sheet-scroll-row">
+                <button
+                  type="button"
+                  className="sheet-scroll-button"
+                  onClick={() => scrollTo(dressRef.current)}
+                  aria-label="Scroll naar dress code"
+                >
+                  ↓
+                </button>
               </div>
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light text-foreground leading-tight">
-                {renderAnimatedWords("Dresscode", 0.03, {
-                  firstLetterMode: "all",
-                  directionMode: "left",
-                })}
-              </h2>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
 
-          <ScrollReveal isEnabled={isOpen} delay={80}>
-            <div className="w-16 h-px bg-white/95 mx-auto" />
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={130}>
-            <div className="space-y-5 text-muted-foreground font-sans text-sm sm:text-base leading-relaxed">
-              <p className="dropcap-line">
-                Styled for the camera 📸, ready for the dancefloor 💃🏿
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={200}>
-            <button
-              type="button"
-              onClick={() => scrollTo(birthdayGiftsRef.current)}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold text-gold transition-colors hover:bg-gold hover:text-background"
+            <ScrollReveal
+              isEnabled={isOpen}
+              delay={220}
+              className="sheet-panel"
             >
-              <span className="text-lg leading-none animate-bounce">↓</span>
-            </button>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <section
-        ref={birthdayGiftsRef}
-        className="timeline-section min-h-[100svh] py-16 px-6 md:py-24 md:px-12 max-w-2xl mx-auto text-center flex items-center justify-center"
-      >
-        <div className="w-full space-y-10 md:space-y-14">
-          <ScrollReveal isEnabled={isOpen}>
-            <div className="space-y-4">
-              <div className="flex justify-center text-gold">
-                <Gift className="h-6 w-6" strokeWidth={1.5} />
+              <section ref={dressRef} className="sheet-block">
+                <div className="dress-headline">
+                  <Camera className="dress-icon" strokeWidth={1.5} />
+                  <h2>
+                    {renderAnimatedWords("Dress code", 0.03, {
+                      firstLetterMode: "all",
+                      directionMode: "left",
+                    })}
+                  </h2>
+                </div>
+                <p className="sheet-inline-text">
+                  {renderAnimatedWords(
+                    "Styled for the camera📷, ready for the dance floor💃🏿.",
+                    0.02,
+                    {
+                      firstLetterMode: "none",
+                      directionMode: "alternate",
+                      wordStep: 0.08,
+                    },
+                  )}
+                </p>
+              </section>
+              <div className="sheet-scroll-row">
+                <button
+                  type="button"
+                  className="sheet-scroll-button"
+                  onClick={() => scrollTo(giftsRef.current)}
+                  aria-label="Scroll naar gifts"
+                >
+                  ↓
+                </button>
               </div>
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light text-foreground leading-tight">
-                {renderAnimatedWords("Birthdaygifts", 0.03, {
-                  firstLetterMode: "all",
-                  directionMode: "right",
-                })}
-              </h2>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
 
-          <ScrollReveal isEnabled={isOpen} delay={80}>
-            <div className="w-16 h-px bg-white/95 mx-auto" />
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={130}>
-            <div className="space-y-5 text-muted-foreground font-sans text-sm sm:text-base leading-relaxed">
-              <p className="dropcap-line">
-                Birthdaygifts: your presence is the greatest gift.
-                <br />
-                If you would like to give something, a financial gift would be
-                truly appreciated.
-                <br />
-                Alternatively, you are welcome to explore my wishlist.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={200}>
-            <button
-              type="button"
-              onClick={() => scrollTo(closingRef.current)}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-gold text-gold transition-colors hover:bg-gold hover:text-background"
+            <ScrollReveal
+              isEnabled={isOpen}
+              delay={300}
+              className="sheet-panel"
             >
-              <span className="text-lg leading-none animate-bounce">↓</span>
-            </button>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <section
-        ref={closingRef}
-        className="timeline-section min-h-[100svh] py-16 px-6 md:py-24 md:px-12 max-w-2xl mx-auto text-center flex items-center justify-center"
-      >
-        <img src={waxSeal} alt="" className="wax-seal-deco wax-seal-bottom" />
-        <img
-          src={flowerCluster}
-          alt=""
-          className="floral-deco floral-deco-left"
-        />
-        <div className="w-full space-y-10 md:space-y-14">
-          <ScrollReveal isEnabled={isOpen}>
-            <div className="space-y-4">
-              <div className="flex justify-center text-gold">
-                <Heart className="h-6 w-6" strokeWidth={1.5} />
+              <section ref={giftsRef} className="sheet-block">
+                <div className="dress-headline">
+                  <Gift className="dress-icon" strokeWidth={1.5} />
+                  <h2>
+                    {renderAnimatedWords("Gifts", 0.03, {
+                      firstLetterMode: "all",
+                      directionMode: "right",
+                    })}
+                  </h2>
+                </div>
+                <p className="sheet-inline-text">
+                  {renderAnimatedWords(
+                    "If you would like to give something, a financial gift would be truly appreciated.",
+                    0.02,
+                    {
+                      firstLetterMode: "none",
+                      directionMode: "left",
+                      wordStep: 0.075,
+                    },
+                  )}
+                </p>
+                <p className="sheet-inline-text">
+                  {renderAnimatedWords(
+                    "Alternatively, you are welcome to explore my wishlist.",
+                    0.02,
+                    {
+                      firstLetterMode: "none",
+                      directionMode: "reverseAlternate",
+                      wordStep: 0.075,
+                    },
+                  )}
+                </p>
+              </section>
+              <div className="sheet-scroll-row">
+                <button
+                  type="button"
+                  className="sheet-scroll-button"
+                  onClick={() => scrollTo(closingRef.current)}
+                  aria-label="Scroll naar afsluiting"
+                >
+                  ↓
+                </button>
               </div>
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light text-foreground leading-tight">
-                <span className="script-mix">Much love,</span>
-                <br />
-                {renderAnimatedWords("Christel’s 25❤️.", 0.04, {
-                  firstLetterMode: "cadence",
-                  firstLetterEvery: 2,
-                  directionMode: "reverseAlternate",
-                  wordStep: 0.12,
-                })}
-              </h2>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
 
-          <ScrollReveal isEnabled={isOpen} delay={80}>
-            <div className="w-16 h-px bg-white/95 mx-auto" />
-          </ScrollReveal>
-
-          <ScrollReveal isEnabled={isOpen} delay={200}>
-            <div className="pt-2 text-center">
-              <a
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault();
-                  scrollToY(0);
-                }}
-                className="text-xs tracking-[0.25em] uppercase text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Back to top
-              </a>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+            <ScrollReveal
+              isEnabled={isOpen}
+              delay={370}
+              className="sheet-panel"
+            >
+              <footer ref={closingRef} className="sheet-closing">
+                <p className="invite-love">Much love,</p>
+                <p className="invite-signature">Christel</p>
+                <div className="sheet-scroll-row">
+                  <button
+                    type="button"
+                    className="sheet-scroll-button"
+                    onClick={() => scrollToY(0)}
+                    aria-label="Scroll terug naar boven"
+                  >
+                    ↑
+                  </button>
+                </div>
+              </footer>
+            </ScrollReveal>
+          </div>
+        </article>
+      </main>
     </div>
   );
 };
 
 export default InvitationContent;
-

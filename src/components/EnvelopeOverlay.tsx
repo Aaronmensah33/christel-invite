@@ -139,9 +139,9 @@ const EnvelopeOverlay = ({
             className={`envelope-flap-hero envelope-flap-hero--${textVariant} reveal-visible font-serif text-3xl sm:text-4xl md:text-5xl font-light leading-tight`}
             aria-hidden="true"
           >
-            <div className="envelope-flap-hero-inner">
+            {/* <div className="envelope-flap-hero-inner">
               {renderFlapWords("open up for a surprise", 0.04)}
-            </div>
+            </div> */}
           </div>
         )}
       </div>
